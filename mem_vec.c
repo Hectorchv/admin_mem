@@ -1,3 +1,26 @@
+/*
+    * Autores:
+    * Chávez Mejía Luis Héctor
+    * Escobar Flores Daniel
+    * 
+    * Objetivo: 
+    * Realizar un programa en C que efectúe la administración
+    * de memoria por paginación, utilizando un vector “de áreas
+    * libres” (el que usa Linux) tanto para la asignación como 
+    * para liberación de marcos de página de memoria
+    * 
+    * 
+    * PASOS DE COMPILACION Y EJECUCIÓN:
+    * 
+    * Se utiliza la biblioteca math.h
+    * gcc -o mem_vec -lm  mem_vec.c
+    * 
+    * El nombre archivo se pasa como parámetro al programa
+    * ./mem_vec procesos.txt
+    * 
+    * 
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +40,7 @@ typedef struct lista
     int marcLibre;
 } mem_vec;
 
+// Operación insertar en la lista
 void insertarList(mem_vec **lista, int dato)
 {
     mem_vec *tmp = malloc(sizeof(mem_vec));
@@ -31,8 +55,8 @@ void insertarList(mem_vec **lista, int dato)
     }
 }
 
-// Eliminar un elemento en la lista de los
-// vectores de áreas libre
+// Operación de eliminar en la lista
+// (primer elemento encontrado)
 void eliminarList(mem_vec **lista)
 {
     mem_vec *tmp = *lista;
@@ -40,6 +64,8 @@ void eliminarList(mem_vec **lista)
     free(tmp);
 }
 
+// Estrae cualquier elemeto de la lista
+// identificado por su valor en marco
 int extraeList(mem_vec **lista, int marco)
 {
     int dev = 0;
@@ -90,13 +116,8 @@ void cargarMem(int memoria[MARCOS_MEM], int marcoLibre, int tam, int pid)
 }
 
 // Función que busca un espacio en el vector de
-// areas libre.
-//
-// devuelve 1 si lo encontró
-// devuelve 0 si no lo encontró
-//
-// @param vectorMLibres vector de areas libres
-// @param tam marcos requeridos por el proceso
+// areas libre. Si no lo encuentra, intenta crearlo
+// dividiendo areas de memoria en el tamaño requerido
 int buscEspacio(mem_vec *vectorMLibres[ENT_VECTOR], int tam)
 {
     int encontrado = 0;
@@ -139,6 +160,8 @@ int buscEspacio(mem_vec *vectorMLibres[ENT_VECTOR], int tam)
     return encontrado;
 }
 
+// Función encargada de unir espación libres de memoria
+// contiguos que cumplan con la condición de unión
 int reunificarMem(int indiMarc, int tam, mem_vec *vectorMlibres[ENT_VECTOR])
 {
     int entrada = (int)log2(tam);
@@ -168,6 +191,8 @@ int reunificarMem(int indiMarc, int tam, mem_vec *vectorMlibres[ENT_VECTOR])
     return 0;
 }
 
+// Función que deasigna de memoria un proceso
+// recibe el pid del que se quiere eliminar de la memoria
 int desasignarMem(int pid, int memoria[MARCOS_MEM], mem_vec *vectorMlibres[ENT_VECTOR])
 {
     int indiMarc = -1;
@@ -195,6 +220,9 @@ int desasignarMem(int pid, int memoria[MARCOS_MEM], mem_vec *vectorMlibres[ENT_V
     return 1;
 }
 
+// Asigna espacio de memoria a un proceso
+// recibe el pid del proceso, así como el tamaño
+// que este ocupará
 int asignarMem(int pid, int tam, mem_vec *vectorMLibres[ENT_VECTOR], int memoria[MARCOS_MEM])
 {
     int asignado = 0;
@@ -222,6 +250,8 @@ int asignarMem(int pid, int tam, mem_vec *vectorMLibres[ENT_VECTOR], int memoria
     return asignado;
 }
 
+
+//Función principal
 int main(int argc, char *argv[])
 {
     int pid, tam;
@@ -280,6 +310,29 @@ int main(int argc, char *argv[])
             printf("\n");
         }
     }
-    
     fclose(archivo);
 }
+
+/**
+ * 
+ * Conclusiones:
+ * 
+ * Luis Héctor Chávez Mejía:
+ * Con el desarrollo de este programa fuí capaz de implementar
+ * mis conocimientos del tema de administración de memoria, ya
+ * que implementé la asignación de memoria con ayuda de un ve-
+ * tor de áreas libres, además de segmentar el proceso con el
+ * objetivo de que este entrara en memoría. Además implementé
+ * el concepto de marcos de página
+ * Apesar de que fué un programa dificil de implementar, logré
+ * aprender todo lo necesario del teme de administración de me-
+ * moria, con lo que puedo decir que he logrado mi objetivo 
+ * principal.
+ * 
+ * Escobar Flores Daniel:
+ * Finalmente se realizó correctamente el funcionamiento del
+ * programa que se tenia como objetivo, se realizó con diferentes
+ * funciones para la función de liberar marcos de página de 
+ * memoria, de este modo nos ayuda a que se ejecute completamente,
+ * incluyendo algunas librerías extras.
+*/
